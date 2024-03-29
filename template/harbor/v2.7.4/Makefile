@@ -9,7 +9,7 @@
 # compile_golangimage:
 #			compile from golang image
 #			for example: make compile_golangimage -e GOBUILDIMAGE= \
-#							golang:1.18.5
+#							golang:1.19.4
 # compile_core, compile_jobservice: compile specific binary
 #
 # build:	build Harbor docker images from photon baseimage
@@ -74,6 +74,8 @@ PORTAL_PATH=$(BUILDPATH)/src/portal
 CHECKENVCMD=checkenv.sh
 
 # parameters
+# # default is true
+# BUILD_PG96=true
 REGISTRYSERVER=
 REGISTRYPROJECTNAME=goharbor
 DEVFLAG=true
@@ -111,6 +113,8 @@ NOTARYVERSION=v0.6.1
 NOTARYMIGRATEVERSION=v4.11.0
 TRIVYVERSION=v0.35.0
 TRIVYADAPTERVERSION=v0.30.5
+# TRIVYVERSION=v0.32.1
+# TRIVYADAPTERVERSION=v0.30.2
 
 # version of chartmuseum for pulling the source code
 CHARTMUSEUM_SRC_TAG=v0.14.0
@@ -357,6 +361,7 @@ gen_apis: lint_apis
 
 MOCKERY_IMAGENAME=$(IMAGENAMESPACE)/mockery
 MOCKERY_VERSION=v2.14.0
+# MOCKERY_VERSION=v2.12.3
 MOCKERY=$(RUNCONTAINER) ${MOCKERY_IMAGENAME}:${MOCKERY_VERSION}
 MOCKERY_IMAGE_BUILD_CMD=${DOCKERBUILD} -f ${TOOLSPATH}/mockery/Dockerfile --build-arg GOLANG=${GOBUILDIMAGE} --build-arg MOCKERY_VERSION=${MOCKERY_VERSION} -t ${MOCKERY_IMAGENAME}:$(MOCKERY_VERSION) .
 
@@ -469,6 +474,15 @@ build_base_docker:
 		fi ; \
 	done
 
+# _build_base_db:
+# 	@if [ "$(BUILD_PG96)" = "true" ] ; then \
+# 		echo "build pg96 rpm package." ; \
+# 		cd $(MAKEFILEPATH_PHOTON)/db && $(MAKEFILEPATH_PHOTON)/db/rpm_builder.sh && cd - ; \
+# 		$(DOCKERBUILD) --pull --no-cache -f $(MAKEFILEPATH_PHOTON)/db/Dockerfile.pg96 -t $(BASEIMAGENAMESPACE)/harbor-db-base:$(BASEIMAGETAG) --label base-build-date=$(date +"%Y%m%d") . ; \
+# 		else \
+# 		$(DOCKERBUILD) --pull --no-cache -f $(MAKEFILEPATH_PHOTON)/db/Dockerfile.base -t $(BASEIMAGENAMESPACE)/harbor-db-base:$(BASEIMAGETAG) --label base-build-date=$(date +"%Y%m%d") . ; \
+# 		fi
+
 pull_base_docker:
 	@for name in $(BUILDBASETARGET); do \
 		echo $$name ; \
@@ -530,7 +544,7 @@ misspell:
 	@echo checking misspell...
 	@find . -type d \( -path ./src/vendor -o -path ./tests \) -prune -o -name '*.go' -print | xargs misspell -error
 
-# golangci-lint binary installation or refer to https://golangci-lint.run/usage/install/#local-installation 
+# golangci-lint binary installation or refer to https://golangci-lint.run/usage/install/#local-installation
 # curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.45.2
 GOLANGCI_LINT := $(shell go env GOPATH)/bin/golangci-lint
 lint:
