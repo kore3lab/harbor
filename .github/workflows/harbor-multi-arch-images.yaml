@@ -207,9 +207,6 @@ jobs:
             *)           make build BUILDTARGET="_build_${{ matrix.component }}" ${CTX} ;;
           esac;
 
-      - run: sudo apt-get install -y tree
-      - run: tree | grep notray-
-
   harbor-building:
     needs:
       - 'docker-image'

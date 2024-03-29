@@ -30,9 +30,12 @@ echo 'copy the binary files to local...'
 ID=$(docker create notary-binary)
 
 for targetarch in ${TARGETARCHS}; do
+  ls -al binary/
   docker cp $ID:/go/bin/notary-server-linux-${targetarch} binary/notary-server-linux-${targetarch}
   docker cp $ID:/go/bin/notary-signer-linux-${targetarch} binary/notary-signer-linux-${targetarch}
   docker cp $ID:/go/bin/migrate-linux-${targetarch} binary/migrate-linux-${targetarch}
+  echo "tttttttttttttttttttttttttt"
+  ls -al binary/
 done
 
 docker cp $ID:/migrations binary/migrations
