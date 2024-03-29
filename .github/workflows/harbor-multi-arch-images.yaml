@@ -319,5 +319,5 @@ jobs:
 
           make package_offline
 
-      - run: ls -al | grep harbor-offline-installer
+      - run: ls -al
       - run: ls -al ./harbor | grep harbor-offline-installer
