@@ -20,6 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         component:
+          - chartserver
           - trivy-adapter
           - core
           - db
@@ -27,6 +28,8 @@ jobs:
           - jobservice
           - log
           - nginx
+          - notary-server
+          - notary-signer
           - portal
           - prepare
           - redis
@@ -113,8 +116,10 @@ jobs:
           - log
           - nginx
           - registryctl
+          - notary
           - trivy_adapter
           - redis
+          - chart_server
           - standalone_db_migrator
           - exporter
 
@@ -192,6 +197,7 @@ jobs:
             core)                   make compile_core ${CTX} ;;
             jobservice)             make compile_jobservice ${CTX};;
             registryctl)            make compile_registryctl ${CTX};;
+            notary*)                make compile_notary_migrate_patch ${CTX} ;;
             standalone_db_migrator) make compile_standalone_db_migrator ${CTX} ;;
           esac;
 
@@ -263,6 +269,9 @@ jobs:
             "trivy-adapter-photon"
             "registry-photon"
             "prepare"
+            "notary-server-photon"
+            "notary-signer-photon"
+            "chartmuseum-photon"
           )
 
           for image in "${images[@]}"; do
@@ -289,6 +298,9 @@ jobs:
             "trivy-adapter-photon"
             "registry-photon"
             "prepare"
+            "notary-server-photon"
+            "notary-signer-photon"
+            "chartmuseum-photon"
           )
 
           for image in "${images[@]}"; do
