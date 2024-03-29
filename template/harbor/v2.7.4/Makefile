@@ -126,7 +126,7 @@ CHARTURL=https://storage.googleapis.com/harbor-builds/bin/chartmuseum/release-${
 NOTARYURL=https://storage.googleapis.com/harbor-builds/bin/notary/release-${NOTARYVERSION}/binary-bundle.tgz
 REGISTRYURL=https://storage.googleapis.com/harbor-builds/bin/registry/release-${REGISTRYVERSION}/registry
 TRIVY_DOWNLOAD_URL=https://github.com/aquasecurity/trivy/releases/download/$(TRIVYVERSION)/trivy_$(TRIVYVERSION:v%=%)_Linux-64bit.tar.gz
-TRIVY_ADAPTER_DOWNLOAD_URL=https://github.com/aquasecurity/harbor-scanner-trivy/releases/download/$(TRIVYADAPTERVERSION)/harbor-scanner-trivy_$(TRIVYADAPTERVERSION:v%=%)_Linux_x86_64.tar.gz
+TRIVY_ADAPTER_DOWNLOAD_URL=https://github.com/aquasecurity/harbor-scanner-trivy/releases/download/$(TRIVYADAPTERVERSION)/harbor-scanner-trivy_$(TRIVYADAPTERVERSION:v%=%)_Linux_arm64.tar.gz
 
 define VERSIONS_FOR_PREPARE
 VERSION_TAG: $(VERSIONTAG)

@@ -295,8 +295,6 @@ jobs:
             retag_image "$image"
           done
 
-      - run: docker images
-
       - name: Docker packaging Offline installer
         run: |
           # Run the 'package_offline' command in ./harbor/Makefile
