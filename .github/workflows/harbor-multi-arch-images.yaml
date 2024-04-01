@@ -308,12 +308,14 @@ jobs:
           done
 
       - name: Docker packaging Offline installer
+        env:
+          version: ${{ env.tag }}
         run: |
           # Run the 'package_offline' command in ./harbor/Makefile
           cd ./harbor
           sed -i 's/package_offline: update_prepare_version compile build/package_offline: update_prepare_version/' Makefile
-          sed -i 's/PKGVERSIONTAG=dev/PKGVERSIONTAG=${{ env.tag }}-arm64'
-          sed -i '0,/VERSIONTAG=dev/s//VERSIONTAG=${{ env.tag }}' Makefile
+          sed -i 's/PKGVERSIONTAG=dev/PKGVERSIONTAG='"${version}"'-arm64/' Makefile
+          sed -i 's/VERSIONTAG=dev/VERSIONTAG='"${version}"'/' Makefile
           sed -i 's/TRIVYFLAG=false/TRIVYFLAG=true/' Makefile
           sed -i 's/NOTARYFLAG=false/NOTARYFLAG=true/' Makefile
           sed -i 's/CHARTFLAG=false/CHARTFLAG=true/' Makefile
@@ -335,12 +337,12 @@ jobs:
           # Synology account password. must encode with decodeURIComponent
           password: ${{ secrets.NAS_PW }}
           # Local location of file
-          filepath: ./harbor
+          filepath: ./harbor/harbor-offline-installer-${{ env.tag }}-arm64.tgz
           # Synology NAS location to upload file
           uploadpath: /cube/archive/v1.1/runtime
           # Set custom file name
           filename: harbor-offline-installer-${{ env.tag }}-arm64.tgz
           # If true, always overwrite exist file.
-          overwrite: false
+          overwrite: true
           # If true, make directory on Synology Nas
-          createparent: false
+          createparent: true
