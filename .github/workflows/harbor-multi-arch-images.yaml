@@ -312,12 +312,35 @@ jobs:
           # Run the 'package_offline' command in ./harbor/Makefile
           cd ./harbor
           sed -i 's/package_offline: update_prepare_version compile build/package_offline: update_prepare_version/' Makefile
+          sed -i 's/PKGVERSIONTAG=dev/PKGVERSIONTAG=${{ env.tag }}-arm64'
+          sed -i '0,/VERSIONTAG=dev/s//VERSIONTAG=${{ env.tag }}' Makefile
           sed -i 's/TRIVYFLAG=false/TRIVYFLAG=true/' Makefile
           sed -i 's/NOTARYFLAG=false/NOTARYFLAG=true/' Makefile
           sed -i 's/CHARTFLAG=false/CHARTFLAG=true/' Makefile
-          sed -i '0,/VERSIONTAG=dev/s//VERSIONTAG=v2.7.4/' Makefile
 
           make package_offline
 
       - run: ls -al
-      - run: ls -al ./harbor | grep harbor-offline-installer
+      - run: ls -al ./harbor
+
+      - name: Synology Upload Action
+        # You may pin to the exact commit or the version.
+        # uses: bungabear/synology_upload_action@3ebf14b9838ed26cac058d020a0e5544a7ec23da
+        uses: bungabear/synology_upload_action@v1.0.0
+        with:
+          # Synology Nas Domain
+          host: ${{ secrets.NAS_DOMAIN }}
+          # Synology account name
+          username: ${{ secrets.NAS_ID }}
+          # Synology account password. must encode with decodeURIComponent
+          password: ${{ secrets.NAS_PW }}
+          # Local location of file
+          filepath: ./harbor
+          # Synology NAS location to upload file
+          uploadpath: /cube/archive/v1.1/runtime
+          # Set custom file name
+          filename: harbor-offline-installer-${{ env.tag }}-arm64.tgz
+          # If true, always overwrite exist file.
+          overwrite: false
+          # If true, make directory on Synology Nas
+          createparent: false
