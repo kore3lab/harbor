@@ -322,27 +322,14 @@ jobs:
 
           make package_offline
 
-      - run: ls -al
-      - run: ls -al ./harbor
-
       - name: Synology Upload Action
-        # You may pin to the exact commit or the version.
-        # uses: bungabear/synology_upload_action@3ebf14b9838ed26cac058d020a0e5544a7ec23da
         uses: bungabear/synology_upload_action@v1.0.0
         with:
-          # Synology Nas Domain
           host: ${{ secrets.NAS_DOMAIN }}
-          # Synology account name
           username: ${{ secrets.NAS_ID }}
-          # Synology account password. must encode with decodeURIComponent
           password: ${{ secrets.NAS_PW }}
-          # Local location of file
           filepath: ./harbor/harbor-offline-installer-${{ env.tag }}-arm64.tgz
-          # Synology NAS location to upload file
-          uploadpath: /cube/archive/v1.1/runtime
-          # Set custom file name
+          uploadpath: ${{ secrets.NAS_PATH }}
           filename: harbor-offline-installer-${{ env.tag }}-arm64.tgz
-          # If true, always overwrite exist file.
           overwrite: true
-          # If true, make directory on Synology Nas
           createparent: true
